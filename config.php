@@ -38,7 +38,7 @@ class Webgrind_Config extends Webgrind_MasterConfig {
 	/**
 	* Path to graphviz dot executable
 	*/	
-	static $dotExecutable = '/usr/local/bin/dot';
+	static $dotExecutable = system('which dot');
 
 	/**
 	 * Image type of graph to output
@@ -106,4 +106,11 @@ class Webgrind_Config extends Webgrind_MasterConfig {
 	    }
 	    return realpath(sys_get_temp_dir()).'/';
 	}
+}
+
+if(!is_executable(Webgrind_Config::$dotExecutable)) {
+	Webgrind_Config::$dotExecutable = exec('which dot');
+}
+if(!is_executable(Webgrind_Config::$pythonExecutable)) {
+	Webgrind_Config::$pythonExecutable = exec('which python');
 }
