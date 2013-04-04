@@ -162,6 +162,38 @@ try {
     		$response = @file_get_contents('http://jokke.dk/webgrindupdate.json?version='.Webgrind_Config::$webgrindVersion);
     		echo $response;
     	break;
+    	
+    	case 'download_grind':
+    	    
+    	    if (!get('grind')) {
+    	        echo "No download specified...";
+    	    }
+    	    
+    	    $file = get('grind');
+    	    
+    	    $fh = Webgrind_FileHandler::getInstance();
+    	    $traceList = $fh->getTraceList();
+    	    
+    	    $isTrace = false;
+    	    
+    	    foreach ($traceList as $trace) {
+    	        
+    	        if ($trace['filename'] == $file) {
+    	            $isTrace = true;
+    	        }
+    	    }
+    	    
+    	    if (!$isTrace || !file_exists(Webgrind_Config::xdebugOutputDir().$file)) {
+    	        echo "Grind file not detected...";
+    	        break;
+    	    }
+    	    
+    	    header('Content-Type: text/plain');
+    	    header('Content-Disposition: attachment; filename="'.$file.'"');
+    	    readfile(Webgrind_Config::xdebugOutputDir().$file);
+    	    
+    	break;
+    	
     	default:
             $welcome = '';
             if (!file_exists(Webgrind_Config::storageDir()) || !is_writable(Webgrind_Config::storageDir())) {
